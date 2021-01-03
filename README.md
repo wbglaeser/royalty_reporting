@@ -6,6 +6,8 @@ As I did not have the required access to the google bigquery table the following
 
 To run and test the pipeline I have created a small number of mock up tables in my bigquery environment. The data goes back to the week starting on 2020-12-21. This is also when the airflow scheduler will start running.
 
+The dataset and tables are currently connected to my account. Please contact me for me to give access if needed.
+
 ## Get up and running
 
 1. Make sure you have [docker](https://docs.docker.com/engine/install/) and [docker-compose](https://docs.docker.com/compose/install/) installed on your system.
@@ -20,7 +22,7 @@ To run and test the pipeline I have created a small number of mock up tables in 
 
 2. Using ssh, clone repo to local enviroment
 
-  `git clone git@github.com:wbglaeser/compute_royalties.git`
+  `git clone git@github.com:wbglaeser/royalty_reporting.git`
 
 3. Navigate to repo directory start up docker-compose
 
@@ -56,3 +58,12 @@ While setting up the reporting tool I came across some small questions. I outlin
 * **multiple track_title on a track id**
 
   From the datasheet it seems possible that there can be multiple track_id, track_title and rightsholder_id combinations within a single reporting week. The final output table described in the task however only points to unique track_id and rightsholder_id combinations. The code therefor simply picks the first track_title for a given track_id within a week.
+
+## Troubleshooting
+
+* Issue with permissions
+
+  If `docker-compose` gives you a permission error you need to adjust permissions for relevant subdirectories.
+
+  `chmod -R 755 logs`
+  `chmod -R 755 scripts`
