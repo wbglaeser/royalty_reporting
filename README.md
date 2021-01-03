@@ -24,7 +24,7 @@ The dataset and tables are currently connected to my account. Please contact me 
 
   `git clone git@github.com:wbglaeser/royalty_reporting.git`
 
-3. Navigate to repo directory start up docker-compose
+3. Navigate to repo directory and start up docker-compose
 
   `docker-compose up`
 
