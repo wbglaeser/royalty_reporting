@@ -17,7 +17,7 @@ with DAG(
     },
     default_args=AIRFLOW_DEFAULT_ARGS,
     description='Soundcloud challenge',
-    start_date=airflow.utils.dates.days_ago(7),
+    start_date=datetime(2020, 12, 21),
     schedule_interval=timedelta(hours=24)) as dag:
 
     check_payout = BigQueryTableSensor(

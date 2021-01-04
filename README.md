@@ -94,6 +94,10 @@ While setting up the reporting tool I came across some small questions. I outlin
 
 ## Troubleshooting
 
+* Issue at startup
+
+  At initial startup it may be that the webserver disappears for a short while due to ressource issues. This is fixed with the newest version of airflow but not implemented here. A workaround would be to stop and restart the process which maintains the dags runs while restarting the webserver.
+
 * Issue with permissions
 
   If `docker-compose` gives you a permission error you need to adjust permissions for relevant subdirectories.
