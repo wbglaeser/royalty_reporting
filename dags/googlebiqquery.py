@@ -24,7 +24,8 @@ with DAG(
     },
     default_args=AIRFLOW_DEFAULT_ARGS,
     description='Soundcloud challenge',
-    start_date=datetime(2020, 12, 21),
+    start_date=datetime.strptime(PD.START_DATE, '%Y-%m-%d'),
+    end_date=datetime.strptime(PD.END_DATE, '%Y-%m-%d'),
     schedule_interval=timedelta(hours=24)) as dag:
 
     cpe = BigQueryTableSensor(

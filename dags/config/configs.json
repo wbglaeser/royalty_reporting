@@ -3,7 +3,9 @@
   "DATASET_ID": "scchallenge",
   "TN_RELEVANT_PLAYS": "weekly_plays",
   "TN_PLAYS_RIGHTSHOLDER": "weekly_plays_rightsholder",
-  "TN_PLAYS_TITLE_RIGHTSHOLDER": "weekly_track_title_rightsholder",
+  "TN_PLAYS_TITLE_RIGHTSHOLDER": "weekly_plays_title_rightsholder",
   "TN_WEEKLY_RIGHTSHOLDER_PAYOUT": "weekly_rightsholder_payout",
-  "TN_WEEKLY_REPORTING": "weekly_reporting"
+  "TN_WEEKLY_REPORTING": "weekly_reporting",
+  "START_DATE": "2020-12-28",
+  "END_DATE": "2021-01-07",
 }
