@@ -1,6 +1,7 @@
 airflow/
 credentials.json
 .venvs/
+logs/scheduler
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

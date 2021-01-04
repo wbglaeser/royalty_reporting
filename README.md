@@ -6,7 +6,40 @@ As I did not have the required access to the google bigquery table the following
 
 To run and test the pipeline I have created a small number of mock up tables in my bigquery environment. The data goes back to the week starting on 2020-12-21. This is also when the airflow scheduler will start running.
 
+Considering the size of the project the airflow setup comes with significant overhead. I decided for the approach both to allow for convenient monitoring and the possibility to scale at a later stage.
+
+**Please Note**:
+
 The dataset and tables are currently connected to my account. Please contact me for me to give access if needed.
+
+### What happens
+
+The pipeline follows a few chained steps that can be easily expanded, for example to include more tests.
+
+**First**, the pipeline checks that the payout table *payout_yyyymmdd* for the running week exists. It does so using a BigQueryTableSensor that ships with Airflow. The table validation can easily be expanded to other tables.
+
+**Second**, it matches the track_id from *listen_yyyymmdd* to a rightsholder_id from *track_rightsholder_rollup*. It does so while also validating that the rightsholder is valid at the time of the play.
+
+Output Table :arrow_forward:  **weekly_track_rightsholder_yyyymmdd**
+
+**Third**, it adds a track_title to the previous result using *track_information_rollup*. Seeing that the track_title is rather decorative and is not mentioned as a unique identifier in the final reporting table in the task sheet I simply assign the frist track_title that appears within the week for any given track_id.
+
+Output Table :arrow_forward:  **weekly_track_title_rightsholder_yyyymmdd**
+
+**Fourth**, it collects the total number of plays for a given rigthsholder id within a given week using *weekly_track_title_rightsholder_yyyymmdd* and *payout_yyyymmdd*. From that is computes the unit price for each rightsholder id. This does not allow for a single rightsholder to have multiple unit prices across different tracks. I comment on this below.
+
+Output Table :arrow_forward:  **weekly_rightsholder_payout_yyyymmdd**
+
+**Fifth**, it merges unit the unit price from rightsholder it on to *weekly_track_title_rightsholder_yyyymmdd* and does some renaming to produce the final reporting tool as described in the task sheet.
+
+**Further information**:
+
+* Weeks run from Monday to Sunday
+* The script is run automatically every night
+* No matter which day of the week it is the script recognises the running week which it identifies by the date of the first day of the week.
+* When the script is first started it runs the pipeline for every week going back to a provided start date.
+
+
 
 ## Get up and running
 
