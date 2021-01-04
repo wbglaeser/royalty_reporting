@@ -6,7 +6,7 @@ As I did not have the required access to the google bigquery table the following
 
 To run and test the pipeline I have created a small number of mock up tables in my bigquery environment. The data goes back to the week starting on 2020-12-21. This is also when the airflow scheduler will start running.
 
-Considering the size of the project the airflow setup comes with significant overhead. I decided for the approach both to allow for convenient monitoring and the possibility to scale at a later stage.
+Considering the size of the project the airflow setup comes with significant overhead. I decided for the approach both to allow for convenient monitoring and the possibility to scale at a later stage. The current versions runs locally using the LocalExecutor. For production this could of course be moved to a more suitable environment such as *google cloud compose*.
 
 **Please Note**:
 
