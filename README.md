@@ -76,6 +76,9 @@ The project is built using docker to allow convenient porting to different machi
 
 4. Go to Airflow WebUI which is now running at [localhost](http://localhost:8080/admin/). You may have to log in. The required admin account will be have been created at startup.
 
+  Account name: **admin**
+  password: **xx**
+
 5. Add google connection to connections
 
   a. Go to connections input form
