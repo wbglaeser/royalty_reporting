@@ -12,4 +12,4 @@ class ProjectDetails:
     TN_WEEKLY_REPORTING = "weekly_reporting"
     END_DATE = "2019-05-19"
     START_DATE = "2019-05-06"
-    SCHEDULE_INTERVAL= timedelta(hours=48)
+    SCHEDULE_INTERVAL= timedelta(hours=24)

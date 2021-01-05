@@ -4,13 +4,13 @@ This repository contains my solution to a royalty reporting challenge. The goal 
 
 The project is implemented using **Python** and **Airflow** and can be spun up with a simple **docker-compose** command. In the following documentation I outline both the pipeline I built to solve the problem as well as the necessary steps to get up and running yourself.
 
-One comment on the project architecture. Considering the size of the project the airflow setup comes with significant overhead. I still decided for the approach both to allow for convenient monitoring and the possibility to scale at a later stage. The current versions runs locally using the LocalExecutor. For production this could be moved to a more suitable environment such as *google cloud compose*.
+One comment on the project architecture. Considering the size of the project the airflow setup comes with significant overhead. I still decided for the approach both to allow for convenient monitoring and the possibility to scale at a later stage. The current version runs locally using the LocalExecutor. For production this could be moved to a more suitable environment such as *google cloud compose*.
 
 ### What happens
 
 The pipeline follows a number of sequential steps that can be easily expanded, for example to include more tests. The steps are listed below.
 
-1. The pipeline checks that the payout table *payout_yyyymmdd* for the running week exists. It does so using a **BigQueryTableSensor** that ships with Airflow. The table validation can easily be expanded to other tables. If the table is detected we move on to the second step.
+1. The pipeline checks that the payout table *payout_yyyymmdd* for the relevant week exists. It does so using a **BigQueryTableSensor** that ships with Airflow. The table validation can easily be expanded to other tables. If the table is detected we move on to the second step.
 
 
 2. The second steps collects the relevant daily *listen_\** tables  to reduce resource consumption in the next phase.
@@ -18,7 +18,7 @@ The pipeline follows a number of sequential steps that can be easily expanded, f
   Output Table :arrow_forward:  **weekly_plays_yyyymmdd**
 
 
-3. The third stage matches the track_id from *weekly_plays_yyyymmdd* to a rightsholder_id from *track_rightsholder_rollup*. It does so while also validating that the rightsholder id is valid at the time of the play.
+3. The third stage matches the track_id from *weekly_plays_yyyymmdd* to a valid rightsholder_id from *track_rightsholder_rollup*.
 
   Output Table :arrow_forward:  **weekly_plays_rightsholder_yyyymmdd**
 
@@ -33,7 +33,9 @@ The pipeline follows a number of sequential steps that can be easily expanded, f
   Output Table :arrow_forward:  **weekly_rightsholder_payout_yyyymmdd**
 
 
-6. The last stage merges the unit unit price from *weekly_rightsholder_payout_yyyymmdd* on to *weekly_track_title_rightsholder_yyyymmdd* and does some renaming to produce the final reporting tool as described in the task sheet.
+6. The last stage merges the unit price from *weekly_rightsholder_payout_yyyymmdd* on to *weekly_track_title_rightsholder_yyyymmdd* and does some renaming to produce the final reporting tool as described in the task sheet.
+
+  :checkered_flag::checkered_flag::checkered_flag:
 
   Output Table :arrow_forward:  **weekly_reporting_yyyymmdd**
 
@@ -41,12 +43,12 @@ The pipeline follows a number of sequential steps that can be easily expanded, f
 
 * Weeks run from **Monday** to **Sunday**
 * The script is run automatically every day at **midnight**
-* No matter which day of the week it is the script recognises the running week which it identifies by the date of the first day of the week.
+* No matter which day of the week it is the script recognises the running week which it identifies by the date of the first day of the week. This allows for reports to be produced before the week is completed.
 * When the script is first started it runs the pipeline for every week going back to a provided start date.
 
 ## Get up and running
 
-The project is built using docker to allow convenient porting to different machines and potential future scaling. As a scheduling tool I have decided for airflow which allows to monitor the pipeline and comes with a number of useful out-of-the-box tools to interact with Googles BigQuery system. In the following I describe the necessary steps to start the pipeline in a local enviroment.
+The project is built using docker to allow convenient porting to different machines and potential future scaling. As a scheduling tool I have decided for airflow which allows to monitor the pipeline and comes with a number of useful out-of-the-box tools to interact with Google's BigQuery system. In the following I describe the necessary steps to start the pipeline in a local enviroment.
 
 1. Make sure you have [docker](https://docs.docker.com/engine/install/) and [docker-compose](https://docs.docker.com/compose/install/) installed on your system.
 
@@ -100,7 +102,7 @@ While setting up the reporting tool I came across some small questions. I outlin
 
 * **multiple tracks on a rightsholder id**
 
-  It was not entirely clear to me how to handle cases where a single rightsholder_id matches on multiple songs within a given week. The payout table does not differentiate by track_id for a rightsholder_id. In my solution I therefor assume that for given rightsholder_id the unit_price is identical for all tracks within a week.
+  It was not entirely clear to me how to handle cases where a single rightsholder_id matches on multiple songs within a given week. The payout table does not differentiate by track_id for a rightsholder_id. In my solution I therefor assume that for a given rightsholder_id the unit_price is identical for all tracks within a week.
 
 * **multiple track_title on a track id**
 
@@ -108,10 +110,6 @@ While setting up the reporting tool I came across some small questions. I outlin
 
 
 ## Troubleshooting
-
-* Issue at startup
-
-  At initial startup it may be that the webserver disappears for a short while due to ressource issues. This is fixed with the newest version of airflow but not implemented here. A workaround would be to stop and restart the process which maintains the dags runs while restarting the webserver.
 
 * Issue with permissions
 
