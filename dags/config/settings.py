@@ -1,28 +1,15 @@
-import json
 import airflow
 from datetime import timedelta
 
-CONFIG_FILE_PATH="dags/config/configs.json"
-with open(CONFIG_FILE_PATH) as jsonfile:
-    data = json.load(jsonfile)
-
 class ProjectDetails:
-    PROJECT_ID = data["PROJECT_ID"]
-    DATASET_ID = data["DATASET_ID"]
-    TN_RELEVANT_PLAYS = data["TN_RELEVANT_PLAYS"]
-    TN_PLAYS_RIGHTSHOLDER = data["TN_PLAYS_RIGHTSHOLDER"]
-    TN_PLAYS_TITLE_RIGHTSHOLDER = data["TN_PLAYS_TITLE_RIGHTSHOLDER"]
-    TN_WEEKLY_RIGHTSHOLDER_PAYOUT = data["TN_WEEKLY_RIGHTSHOLDER_PAYOUT"]
-    TN_WEEKLY_REPORTING = data["TN_WEEKLY_REPORTING"]
-    END_DATE = data["END_DATE"]
-    START_DATE = data["START_DATE"]
-
-AIRFLOW_DEFAULT_ARGS = {
-    'owner': 'benglaeser',
-    'depends_on_past': False,
-    'email': ['ben.glaeser@tuta.io'],
-    'email_on_failure': False,
-    'email_on_retry': False,
-    'retries': 1,
-    'retry_delay': timedelta(minutes=1),
-}
+    PROJECT_ID = "rnr-data-eng-challenge"
+    OUTPUT_DATASET_ID = "inr006"
+    INPUT_DATASET_ID = "challenge_dataset"
+    TN_RELEVANT_PLAYS = "weekly_plays"
+    TN_PLAYS_RIGHTSHOLDER = "weekly_plays_rightsholder"
+    TN_PLAYS_TITLE_RIGHTSHOLDER = "weekly_plays_title_rightsholder"
+    TN_WEEKLY_RIGHTSHOLDER_PAYOUT = "weekly_rightsholder_payout"
+    TN_WEEKLY_REPORTING = "weekly_reporting"
+    END_DATE = "2019-05-19"
+    START_DATE = "2019-05-06"
+    SCHEDULE_INTERVAL= timedelta(hours=48)

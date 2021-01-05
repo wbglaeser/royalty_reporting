@@ -2,10 +2,9 @@ SELECT_RELEVANT_PLAYS = """
     SELECT
       *
     FROM
-      `{{ dataset_id }}.listen_*` AS _listen_daily
+      `{{ input_dataset_id }}.listen_*` AS _listen_daily
     WHERE (
       _TABLE_SUFFIX = '{{ retrieve_date(ds, "monday")}}'
-      OR _TABLE_SUFFIX = '{{ retrieve_date(ds, "monday")}}'
       OR _TABLE_SUFFIX = '{{ retrieve_date(ds, "tuesday")}}'
       OR _TABLE_SUFFIX = '{{ retrieve_date(ds, "wednesday")}}'
       OR _TABLE_SUFFIX = '{{ retrieve_date(ds, "thursday")}}'
@@ -24,7 +23,7 @@ JOIN_TRACKID_RIGHTHOLDERID = """
       COUNT(listen_daily.track_id) AS track_count_per_rightsholder,
       rightsholder_info.rightsholder_id,
     FROM `{{ relevant_plays }}_{{ retrieve_start_date(ds) }}` AS listen_daily
-    JOIN {{ dataset_id }}.track_rightsholder_rollup as rightsholder_info
+    JOIN {{ input_dataset_id }}.track_rightsholder_rollup as rightsholder_info
     ON listen_daily.track_id = rightsholder_info.track_id
       AND listen_daily.event_time >= CAST(rightsholder_info.valid_from AS TIMESTAMP)
       AND listen_daily.event_time < CAST(rightsholder_info.valid_to +1 AS TIMESTAMP)
@@ -34,7 +33,7 @@ JOIN_TRACKID_RIGHTHOLDERID = """
 JOIN_TRACKID_TRACKTITLE = """
     SELECT
       weekly_listens.track_id,
-      track_rightsholder_count,
+      track_count_per_rightsholder,
       rightsholder_id,
       track_title
     FROM
@@ -46,10 +45,7 @@ JOIN_TRACKID_TRACKTITLE = """
           track_title,
           row_number() over (partition by track_id order by track_title) AS rn
          FROM
-           `{{ dataset_id }}.track_information_rollup`
-        WHERE _listen_daily.event_time>='{{ retrieve_start_timestamp(ds) }}'
-        AND _listen_daily.event_time<'{{ retrieve_end_timestamp(ds) }}'
-        AND _listen_daily.duration >= 30
+           `{{ input_dataset_id }}.track_information_rollup`
       ) AS track_information
     ON weekly_listens.track_id = track_information.track_id
     WHERE rn = 1
@@ -58,13 +54,13 @@ JOIN_TRACKID_TRACKTITLE = """
 JOIN_RIGHTSHOLDER_PAYOUT = """
     SELECT
       weekly_rightsholder.rightsholder_id,
-      SUM(track_rightsholder_count) AS total_plays,
-      SUM(amount) AS weekly_payout,
-      SUM(amount) / SUM(track_rightsholder_count) AS per_track_payout
+      SUM(track_count_per_rightsholder) AS total_plays,
+      amount AS weekly_payout,
+      amount / SUM(track_count_per_rightsholder) AS per_track_payout
     FROM {{ plays_titles_rightsholder }}_{{ retrieve_start_date(ds) }} AS weekly_rightsholder
-    JOIN {{ dataset_id }}.payout_{{ retrieve_start_date(ds) }} as payout_rightsholder
+    JOIN {{ input_dataset_id }}.payout_{{ retrieve_start_date(ds) }} as payout_rightsholder
     ON weekly_rightsholder.rightsholder_id = payout_rightsholder.rightsholder_id
-    GROUP BY rightsholder_id
+    GROUP BY amount, rightsholder_id
 """
 
 JOIN_TRACKID_RIGHTHOLDER_PAYOUT = """
@@ -74,7 +70,7 @@ JOIN_TRACKID_RIGHTHOLDER_PAYOUT = """
       track_id,
       track_title,
       weekly_listens.rightsholder_id,
-      track_rightsholder_count as total_plays,
+      track_count_per_rightsholder as total_plays,
       per_track_payout as unit_price
     FROM
       `{{ plays_titles_rightsholder }}_{{ retrieve_start_date(ds) }}` AS weekly_listens

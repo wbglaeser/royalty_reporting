@@ -37,4 +37,4 @@ def retrieve_date(ds, day: str) -> str:
     """ Retrieve date of weekday for selection listen tables"""
     ds = datetime.strptime(ds, '%Y-%m-%d')
     shifter = switch_daystring_to_index(day)
-    return (ds - timedelta(ds.weekday()-shifter).strftime("%Y%m%d")
+    return (ds - timedelta(ds.weekday()-shifter)).strftime("%Y%m%d")
