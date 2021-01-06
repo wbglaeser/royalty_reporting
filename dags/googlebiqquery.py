@@ -48,7 +48,7 @@ with DAG(
         project_id=PD.PROJECT_ID,
         dataset_id="{{ input_dataset_id }}",
         table_id="payout_{{retrieve_start_date(ds)}}",
-        bigquery_conn_id="scchallenge-gcp-conn",
+        bigquery_conn_id=PD.CONNECTION_ID,
     )
 
     # This Operator collects the relevant daily listen tables and concatenates them
@@ -60,7 +60,7 @@ with DAG(
         destination_dataset_table="{{ relevant_plays }}_{{retrieve_start_date(ds)}}",
         write_disposition='WRITE_TRUNCATE',
         allow_large_results=True,
-        bigquery_conn_id="scchallenge-gcp-conn",
+        bigquery_conn_id=PD.CONNECTION_ID,
         use_legacy_sql=False,
         location="europe-west3",
     )
@@ -75,7 +75,7 @@ with DAG(
         destination_dataset_table="{{ plays_rightsholder }}_{{retrieve_start_date(ds)}}",
         write_disposition='WRITE_TRUNCATE',
         allow_large_results=False,
-        bigquery_conn_id="scchallenge-gcp-conn",
+        bigquery_conn_id=PD.CONNECTION_ID,
         use_legacy_sql=False,
         location="europe-west3",
     )
@@ -91,7 +91,7 @@ with DAG(
         destination_dataset_table="{{ plays_titles_rightsholder }}_{{retrieve_start_date(ds)}}",
         write_disposition='WRITE_TRUNCATE',
         allow_large_results=True,
-        bigquery_conn_id="scchallenge-gcp-conn",
+        bigquery_conn_id=PD.CONNECTION_ID,
         use_legacy_sql=False,
         location="europe-west3",
     )
@@ -107,7 +107,7 @@ with DAG(
         destination_dataset_table="{{ weekly_rightsholder_payout }}_{{retrieve_start_date(ds)}}",
         write_disposition='WRITE_TRUNCATE',
         allow_large_results=False,
-        bigquery_conn_id="scchallenge-gcp-conn",
+        bigquery_conn_id=PD.CONNECTION_ID,
         use_legacy_sql=False,
         location="europe-west3",
     )
@@ -121,7 +121,7 @@ with DAG(
         destination_dataset_table="{{ weekly_reporting }}_{{retrieve_start_date(ds)}}",
         write_disposition='WRITE_TRUNCATE',
         allow_large_results=True,
-        bigquery_conn_id="scchallenge-gcp-conn",
+        bigquery_conn_id=PD.CONNECTION_ID,
         use_legacy_sql=False,
         location="europe-west3",
     )

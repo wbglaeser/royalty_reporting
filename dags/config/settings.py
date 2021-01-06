@@ -2,6 +2,7 @@ import airflow
 from datetime import timedelta
 
 class ProjectDetails:
+    CONNECTION_ID = "scchallenge-gcp-conn"
     PROJECT_ID = "rnr-data-eng-challenge"
     OUTPUT_DATASET_ID = "inr006"
     INPUT_DATASET_ID = "challenge_dataset"

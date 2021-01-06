@@ -60,12 +60,15 @@ The project is built using docker to allow convenient porting to different machi
   * keyfile: You need a json **credential key** that is connected to a service account that is linked to the project and has read permissions for the input dataset and write permissions to the output dataset. Place this key in the following locaction within the repository (possible once you have cloned into the repository): `/dags/config/credentials.json`
 
 
-2. Using ssh, clone repo to local enviroment
+2. Using ssh, clone repo to local enviroment. If you are not coming through github
+you may need to unzip the folder containing the source code.
 
   `git clone git@github.com:***/royalty_reporting.git`
 
 
 3. Navigate to repo directory and place your key file in the appropriate location.
+Again, if you are not coming through github the key may already be included in the
+unzipped folder.
 
   `cd royalty_reporting && mv [path/keyfile.json] dags/config/credentials.json`
 
@@ -89,6 +92,12 @@ The project is built using docker to allow convenient porting to different machi
 
   b. Fill out input form with corresponding details and save
 
+  * connection id: **scchallenge-gcp-conn**
+  * project id: **rnr-data-eng-challenge**
+  * conn type: **google cloud platform**
+  * keyfile path: **/opt/airflow/dags/config/credentials.json**
+  * scopes: **https://www.googleapis.com/auth/cloud-platform**
+
   ![Details Tag](docs/details.png)
 
 6. Now you can start the airflow pipeline by turning on the dag. The pipeline should now be running. Seeing that the start date lies in the past the pipeline will be busy initially catching up to today's date.
@@ -110,13 +119,3 @@ While setting up the reporting tool I came across some small questions. I outlin
 * **multiple track_title on a track id**
 
   From the datasheet it seems possible that there can be multiple track_id, track_title and rightsholder_id combinations within a single reporting week. The final output table described in the task however only points to unique track_id and rightsholder_id combinations. The code therefor simply picks the first track_title for a given track_id within a week.
-
-
-## Troubleshooting
-
-* Issue with permissions
-
-  If `docker-compose` gives you a permission error you need to adjust permissions for relevant subdirectories.
-
-  `chmod -R 755 logs`
-  `chmod -R 755 scripts`
