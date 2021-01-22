@@ -1,6 +1,6 @@
 # Weekly Royalty
 
-This repository contains my solution to a royalty reporting challenge. The goal was to connect tables that collect daily song plays to correct rightsholders and construct a weekly summary.
+The goal of this project was to become more familiar and showcase how airflow and bigquery can work together.  
 
 The project is implemented using **Python** and **Airflow** and can be spun up with a simple **docker-compose** command. In the following documentation I outline both the pipeline I built to solve the problem as well as the necessary steps to get up and running yourself.
 
