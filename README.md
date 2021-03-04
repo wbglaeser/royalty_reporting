@@ -108,6 +108,12 @@ unzipped folder.
 
 In case you wish to adapt the pipeline you can change the settings in the file `dags/config/settings.py`. Here you can change the timeframe for running the pipeline, the scheduled interval or the address of output or input datasets.
 
+### Problems with permissions
+
+If you run into problems with permissions set on the logs try adjusting the permissions set:
+
+`chmod -R 755 logs/`
+
 ## Comments on the data
 
 While setting up the reporting tool I came across some small questions. I outline here how I dealt with them.
